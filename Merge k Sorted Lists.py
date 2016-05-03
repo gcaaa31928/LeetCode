@@ -1,3 +1,4 @@
+from heapq import heappush, heappop
 # Definition for singly-linked list.
 class ListNode(object):
     def __init__(self, x):
@@ -11,28 +12,24 @@ class Solution(object):
         :rtype: ListNode
         """
         res = list()
-        result_root = ListNode(-1)
+        result_root = None
         node = result_root
-        while True:
-            min = 9999999999
-            index = None
-
-            for idx, list_node in enumerate(lists):
-                if list_node is None:
-                    continue
-                if list_node.val < min:
-                    min = list_node.val
-                    index = idx
-            if index is None:
-                break
+        heap = []
+        for idx, list_node in enumerate(lists):
+            if list_node is None:
+                continue
+            heappush(heap, (list_node.val, idx))
+        while heap:
+            value, index = heappop(heap)
             lists[index] = lists[index].next
-            if node.val == -1:
-                node.val = min
+            if lists[index] is not None:
+                heappush(heap, (lists[index].val, index))
+            if result_root is None:
+                result_root = ListNode(value)
+                node = result_root
             else:
-                node.next = ListNode(min)
+                node.next = ListNode(value)
                 node = node.next
-        if result_root.val == -1:
-            return None
         return result_root
 
 node1 = ListNode(1)
